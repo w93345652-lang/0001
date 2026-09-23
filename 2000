@@ -1,0 +1,43 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- อ้างอิง UI Elements
+local screenGui = script.Parent
+local toggleButton = screenGui:WaitForChild("ToggleButton")
+local mainFrame = screenGui:WaitForChild("MainFrame")
+local speedInput = mainFrame:WaitForChild("SpeedInput")
+local applyButton = mainFrame:WaitForChild("ApplyButton")
+
+-- ซ่อนเมนูไว้เริ่มต้น
+mainFrame.Visible = false
+
+-- ฟังก์ชันปรับความเร็วตัวละคร
+local function setCharacterSpeed(speedValue)
+	local character = player.Character
+	if character then
+		local humanoid = character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			-- จำกัดค่าให้อยู่ในช่วง 1 - 100
+			local clampedSpeed = math.clamp(speedValue, 1, 100)
+			humanoid.WalkSpeed = clampedSpeed
+		end
+	end
+end
+
+-- ระบบ เปิด/ปิด หน้าจอ UI
+toggleButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = not mainFrame.Visible
+end)
+
+-- ปุ่มกดยืนยันเพื่อปรับความเร็ว
+applyButton.MouseButton1Click:Connect(function()
+	local inputText = speedInput.Text
+	local newSpeed = tonumber(inputText)
+	
+	if newSpeed then
+		setCharacterSpeed(newSpeed)
+	else
+		-- กรณีพิมพ์ตัวเลขไม่ถูกต้อง ให้แสดงค่าปัจจุบัน
+		speedInput.Text = "1-100 เท่านั้น"
+	end
+end)
