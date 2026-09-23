@@ -1,0 +1,34 @@
+-- ตัวอย่างการปรับความเร็วตัวละคร
+local defaultSpeed = 16
+local maxSpeed = 100
+
+local function setPlayerSpeed(character, newSpeed)
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	if humanoid then
+		-- ตรวจสอบให้ความเร็วอยู่ในช่วง 1 ถึง 100
+		humanoid.WalkSpeed = math.clamp(newSpeed, 1, maxSpeed)
+	end
+end
+
+-- ตัวอย่างการเรียกใช้งาน: ปรับความเร็วเป็น 50
+-- setPlayerSpeed(player.Character, 50)
+local function enableFlight(character)
+	local hrp = character:FindFirstChild("HumanoidRootPart")
+	if not hrp then return end
+	
+	-- สร้าง LinearVelocity เพื่อควบคุมการเคลื่อนที่กลางอากาศ
+	local attachment = hrp:FindFirstChild("FlightAttachment") or Instance.new("Attachment", hrp)
+	attachment.Name = "FlightAttachment"
+	
+	local linearVelocity = hrp:FindFirstChild("FlightVelocity") or Instance.new("LinearVelocity", hrp)
+	linearVelocity.Name = "FlightVelocity"
+	linearVelocity.Attachment0 = attachment
+	linearVelocity.MaxForce = 100000 -- กำหนดแรงยก
+	linearVelocity.VectorVelocity = Vector3.new(0, 50, 0) -- บินขึ้นด้วยความเร็ว 50
+end
+-- ปรับค่าความโปร่งใสของ Part ชั่วคราวเมื่อกล้องถูกบัง
+local function makePartTransparent(part)
+	if part:IsA("BasePart") then
+		part.LocalTransparencyModifier = 0.5 -- ปรับระดับความโปร่งใส (0 - 1)
+	end
+end
