@@ -1,0 +1,67 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local screenGui = script.Parent
+
+-- 1. Create Toggle Button
+local toggleButton = Instance.new("TextButton")
+toggleButton.Name = "ToggleButton"
+toggleButton.Size = UDim2.new(0, 100, 0, 40)
+toggleButton.Position = UDim2.new(0, 10, 0.4, 0)
+toggleButton.Text = "Menu"
+toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleButton.Parent = screenGui
+
+-- 2. Create Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 200, 0, 120)
+mainFrame.Position = UDim2.new(0, 120, 0.4, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+mainFrame.Visible = false
+mainFrame.Parent = screenGui
+
+-- 3. Create Speed Input Box
+local speedInput = Instance.new("TextBox")
+speedInput.Name = "SpeedInput"
+speedInput.Size = UDim2.new(0, 160, 0, 35)
+speedInput.Position = UDim2.new(0, 20, 0, 20)
+speedInput.PlaceholderText = "Speed (1-100)"
+speedInput.Text = ""
+speedInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+speedInput.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+speedInput.Parent = mainFrame
+
+-- 4. Create Apply Button
+local applyButton = Instance.new("TextButton")
+applyButton.Name = "ApplyButton"
+applyButton.Size = UDim2.new(0, 160, 0, 35)
+applyButton.Position = UDim2.new(0, 20, 0, 65)
+applyButton.Text = "Apply Speed"
+applyButton.BackgroundColor3 = Color3.fromRGB(0, 150, 75)
+applyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+applyButton.Parent = mainFrame
+
+-- UI Functionality
+toggleButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = not mainFrame.Visible
+end)
+
+applyButton.MouseButton1Click:Connect(function()
+	local inputNumber = tonumber(speedInput.Text)
+	
+	if inputNumber then
+		local character = player.Character
+		if character then
+			local humanoid = character:FindFirstChildOfClass("Humanoid")
+			if humanoid then
+				local safeSpeed = math.clamp(inputNumber, 1, 100)
+				humanoid.WalkSpeed = safeSpeed
+				speedInput.Text = "Speed: " .. tostring(safeSpeed)
+			end
+		end
+	else
+		speedInput.Text = "Enter a number"
+	end
+end)
